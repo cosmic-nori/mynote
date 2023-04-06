@@ -10,7 +10,7 @@ Tomo-e Gozenの過去のstack FITSデータ、とりわけある指定のセン�
 1では、PostgreSQL(`psql`コマンド)がインストールされているマシンを使い、Tomo-eのアーカイブ用計算機(`tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp`)にアクセスする。
 文字列結合演算子`||`と`WHERE`句を駆使して欲しいFITSリストを出力させ、テキストファイルに保存する。
 
-1で保存したテキストファイルには、現在ファイルパスの先頭に`/storage`が抜けており、不完全である。そのため、例えば以下のようにしてファイルの一部を置換してやる。
+1で保存したテキストファイルには、現在ファイルパスの先頭に`/storage`が抜けており不完全である。そのため、例えば以下のようにしてファイルの一部を置換してやる。
 `cat filelist.txt | sed s@pool@storage/pool@g > filelist_rev.txt` (区切り文字を通常のスラッシュ`/`ではなく`@`を使った)
 
 <!-- ## Access to Database -->
