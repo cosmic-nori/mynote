@@ -20,7 +20,6 @@ FILE_NAME=filelist.txt
 while read LINE; do scp ${LINE} ./; done < ${FILE_NAME}
 ```
 
-
 最後に`tomoe@tomoered-node0.kiso.ioa.s.u-tokyo.ac.jp`に落としてきたFITSを`scp`コマンドで手元のマシンに転送する。
 
 
