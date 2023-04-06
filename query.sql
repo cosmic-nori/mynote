@@ -3,4 +3,4 @@ SELECT
 FROM
   stack_files
 WHERE
-  det_id = 133;
+  det_id = 112;
