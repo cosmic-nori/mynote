@@ -3,11 +3,12 @@
 Tomo-e Gozenの過去のstack FITSデータ、とりわけある指定のセンサのある時期に取得したデータを一括で手元にダウンロードしたい。
 
 ## 事前の準備
-Tomo-e Gozen のアーカイブは PostgreSQL で運用されている。PostgreSQL のクライアント (psql) をインストールするか、既にインストールされている計算機を使用すること。
+Tomo-e Gozen のアーカイブは PostgreSQL で運用されている。  
+PostgreSQL のクライアント (psql) をインストールするか、既にインストールされている計算機を使用すること。
 
 ### Access to Database
-アーカイブ用計算機は `tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp` でホストされています．
-接続するために必要な情報は以下のとおりです．
+アーカイブ用計算機は `tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp` でホストされている。  
+接続するために必要な情報は以下のとおり。
 
 - hostname: tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp
 - port: 15432
