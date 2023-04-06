@@ -13,7 +13,7 @@ Tomo-e Gozenの過去のstack FITSデータ、とりわけある指定のセン�
 
 1で保存したテキストファイルには、現在ファイルパスの先頭に`/storage`が抜けており不完全である。そのため、例えば以下のようにしてファイルの一部を置換してやる。
 `cat filelist.txt | sed s@pool@storage/pool@g > filelist.txt` (区切り文字を通常のスラッシュ`/`ではなく`@`を使った)
-その後、 保存したテキストファイル`filelist.txt`を１行ずつ読み込んで`scp`コマンドを走らせる。例えば以下のようにする。
+その後、 保存したテキストファイル`filelist.txt`を１行ずつ読み込んで`scp`コマンドを木曽のマシン上で(e.g., `tomoe@tomoered-node0.kiso.ioa.s.u-tokyo.ac.jp`)走らせる。例えば以下のようにする。
 
 ```
 FILE_NAME=filelist.txt
