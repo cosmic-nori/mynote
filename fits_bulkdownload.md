@@ -13,18 +13,16 @@ Tomo-e Gozenの過去のstack FITSデータ、とりわけある指定のセン�
 
 1で保存したテキストファイルには、現在ファイルパスの先頭に`/storage`が抜けており不完全である。そのため、例えば以下のようにしてファイルの一部を置換してやる。
 `cat filelist.txt | sed s@pool@storage/pool@g > filelist.txt` (区切り文字を通常のスラッシュ`/`ではなく`@`を使った)
+その後、 保存したテキストファイル`filelist.txt`を１行ずつ読み込んで`scp`コマンドを走らせる。例えば以下のようにする。
+
+```
+FILE_NAME=filelist.txt
+while read LINE; do scp ${LINE} ./; done < ${FILE_NAME}
+```
 
 
 最後に`tomoe@tomoered-node0.kiso.ioa.s.u-tokyo.ac.jp`に落としてきたFITSを`scp`コマンドで手元のマシンに転送する。
 
-<!-- 保存したテキストファイル`filelist.txt`を１行ずつ読み込んで、例えば以下のようにして -->
-```
-FILE_NAME=filelist.txt
-while read LINE
-do
-
-done < ${FILE_NAME}
-```
 
 <!-- ## Access to Database -->
 <!-- - a
