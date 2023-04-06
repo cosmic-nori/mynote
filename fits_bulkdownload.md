@@ -84,7 +84,25 @@ tomoe=> \d stack_files
 
 この目的にはファイルを格納している計算機とファイルパスが必要で、ファイルパスを得るには
 `host`, `disk`, `filename` の 3 つの情報があれば良い。試しに 10 件だけ表示してみる。
+``` console
+tomoe=> SELECT host, disk, filename FROM stack_files LIMIT 10;
+      host      |            disk            |           filename           
+----------------+----------------------------+------------------------------
+ 192.168.11.135 | /pool1/20190731/0000000193 | sTMQ1201907310013088112.fits
+ 192.168.11.135 | /pool1/20190731/0000000214 | sTMQ1201907310013088212.fits
+ 192.168.11.135 | /pool1/20190731/0000000235 | sTMQ1201907310013088312.fits
+ 192.168.11.135 | /pool1/20190731/0000000255 | sTMQ1201907310013088412.fits
+ 192.168.11.135 | /pool0/20190731/0000000280 | sTMQ1201907310013088612.fits
+ 192.168.11.135 | /pool1/20190731/0000000281 | sTMQ1201907310013088812.fits
+ 192.168.11.135 | /pool0/20190731/0000000284 | sTMQ1201907310013088512.fits
+ 192.168.11.135 | /pool0/20190731/0000000314 | sTMQ1201907310013088912.fits
+ 192.168.11.135 | /pool1/20190731/0000000353 | sTMQ1201907310013088712.fits
+ 192.168.11.135 | /pool0/20190731/0000000384 | sTMQ1201907310013089012.fits
+(10 rows)
+```
 
+文字列結合演算子 `||` を使えばファイルパスになる。
+また `WHERE` 句でオブジェクト名、必要なセンサや観測日時を絞り込む。
 ``` console
 tomoe=> SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' LIMIT 10;
                                 filepath                                
@@ -104,7 +122,7 @@ tomoe=> SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_fil
 
 このquery結果をファイル(`test_sql.txt`)として出力してやれば良い。例えば以下のようにする。
 ``` console
-psql -h tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp -p 15432 -d tomoe -U science -c "SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' LIMIT 10" -o test_sql.txt
+psql -h tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp -p 15432 -d tomoe -U ????? -c "SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' LIMIT 10" -o test_sql.txt
 ```
 
 
@@ -122,6 +140,17 @@ psql -h tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp -p 15432 -d tomoe -U science -c
 ```
 FILE_NAME=filelist.txt
 while read LINE; do scp ${LINE} ./; done < ${FILE_NAME}
+```
+
+大量のレコードを取得する場合にはそれなりに時間がかかる。
+また複雑なクエリをいちいち入力するのは面倒なので、あらかじめクエリを別のファイルに作成しておいてコマンドの引数として与えるとよい。
+
+``` console
+$ psql -h tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp \
+       -p 15432 \
+       -d tomoe \
+       -U ????? \
+       -f query.sql -o output.txt
 ```
 
 最後に`tomoe@tomoered-node0.kiso.ioa.s.u-tokyo.ac.jp`に落としてきたFITSを`scp`コマンドで手元のマシンに転送する。
