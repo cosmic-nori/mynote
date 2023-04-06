@@ -79,17 +79,44 @@ tomoe=> \d stack_files
 3. 上で持ってきたデータを`scp`で自分のローカルマシンに転送する
 
 ### データベースからファイルパスを取得
+文字列結合演算子`||`と`WHERE`句を駆使して欲しいFITSリストを出力させ、テキストファイルに保存する。
+> 過去のstack FITSデータを（特定のセンサのみ）まとめてダウンロードしたい
+
+この目的にはファイルを格納している計算機とファイルパスが必要で、ファイルパスを得るには
+`host`, `disk`, `filename` の 3 つの情報があれば良い。試しに 10 件だけ表示してみる。
 
 ``` console
-tomoe=> SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' ;
+tomoe=> SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' LIMIT 10;
+                                filepath                                
+------------------------------------------------------------------------
+ 192.168.11.133:/pool0/20230314/0070694491/sTMQ1202303140093482012.fits
+ 192.168.11.133:/pool0/20230314/0070694493/sTMQ1202303140093482112.fits
+ 192.168.11.133:/pool0/20230314/0070694494/sTMQ1202303140093482212.fits
+ 192.168.11.133:/pool0/20230314/0070694496/sTMQ1202303140093482312.fits
+ 192.168.11.133:/pool0/20230314/0070694498/sTMQ1202303140093482412.fits
+ 192.168.11.133:/pool0/20230314/0070694507/sTMQ1202303140093482812.fits
+ 192.168.11.133:/pool0/20230314/0070694509/sTMQ1202303140093482912.fits
+ 192.168.11.133:/pool0/20230314/0070694510/sTMQ1202303140093483012.fits
+ 192.168.11.133:/pool0/20230314/0070694512/sTMQ1202303140093483112.fits
+ 192.168.11.133:/pool0/20230314/0070694514/sTMQ1202303140093483212.fits
+(10 rows)
 ```
+
+このquery結果をファイル(`test_sql.txt`)として出力してやれば良い。例えば以下のようにする。
+``` console
+psql -h tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp -p 15432 -d tomoe -U science -c "SELECT host || ':' || disk || '/' || filename AS filepath FROM stack_files WHERE det_id = 112 and object = 'Pleiades_Star' and timestamp > '2023-03-13 18:00:00' LIMIT 10" -o test_sql.txt
+```
+
+
 
 <!-- 1では、PostgreSQL(`psql`コマンド)がインストールされているマシンを使い、Tomo-eのアーカイブ用計算機(`tomoearv-master.kiso.ioa.s.u-tokyo.ac.jp`)にアクセスする。
 文字列結合演算子`||`と`WHERE`句を駆使して欲しいFITSリストを出力させ、テキストファイルに保存する。
  -->
 
 1で保存したテキストファイルには、現在ファイルパスの先頭に`/storage`が抜けており不完全である。そのため、例えば以下のようにしてファイルの一部を置換してやる。
+
 `cat filelist.txt | sed s@pool@storage/pool@g > filelist.txt` (区切り文字を通常のスラッシュ`/`ではなく`@`を使った)
+
 その後、 保存したテキストファイル`filelist.txt`を１行ずつ読み込んで`scp`コマンドを木曽のマシン上で(e.g., `tomoe@tomoered-node0.kiso.ioa.s.u-tokyo.ac.jp`)走らせる。例えば以下のようにする。
 
 ```
